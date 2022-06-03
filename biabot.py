@@ -17,9 +17,8 @@ def main():
                      username=os.environ['REDDIT_USERNAME'],
                      password=os.environ['REDDIT_PASSWORD'])
 
-	print("os ?")
 	print(os.environ['REDDIT_USERNAME'])
-	print('start crawling2')
+	print('start crawling')
 	sys.stdout.flush()
 	for comment in reddit.subreddit("biathlon").stream.comments():
 		if "!biathlonResult" in comment.body:
@@ -27,8 +26,8 @@ def main():
 			raceregex = re.compile(r"(BT[A-X0-9]+)")
 			mo1 = raceregex.search(comment.body)
 			print('for race '+mo1.group(1))
-			print(report(mo1.group(1)))
-			#comment.reply(report(mo1.group(1)))
+			#print(report(mo1.group(1)))
+			comment.reply(report(mo1.group(1)))
 			#print('output finished for '+mo1.group(1))
 
 
