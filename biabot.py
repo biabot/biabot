@@ -5,30 +5,39 @@ from urllib.request import urlopen
 import os
 import json
 import time
-from datetime import datetime
+from datetime import timezone
+import datetime
 import re
 import sys
 
 
 def main():
-	reddit = praw.Reddit(client_id=os.environ['REDDIT_CLIENT_ID'],
-                     client_secret=os.environ['REDDIT_CLIENT_SECRET'],
-                     user_agent=os.environ['REDDIT_USER_AGENT'],
-                     username=os.environ['REDDIT_USERNAME'],
-                     password=os.environ['REDDIT_PASSWORD'])
+	reddit = praw.Reddit(
+		client_id="1CQ-o6ptxp8g8AAPUcm48w", #Your Personal Use Script
+		client_secret="y3VgZ_FbupsS46cfwn1qaqL4D03UaQ", #Your Secret key
+		password="Oukarina71", #Your Reddit Account Password
+		user_agent="Biathlon race", 
+		username="biabot",
+	)
 
-	print(os.environ['REDDIT_USERNAME'])
-	print('start crawling')
 	sys.stdout.flush()
 	for comment in reddit.subreddit("biathlon").stream.comments():
 		if "!biathlonResult" in comment.body:
 			print('found !biathlonResult')
 			raceregex = re.compile(r"(BT[A-X0-9]+)")
 			mo1 = raceregex.search(comment.body)
-			print('for race '+mo1.group(1))
-			#print(report(mo1.group(1)))
-			comment.reply(report(mo1.group(1)))
-			#print('output finished for '+mo1.group(1))
+			if mo1.group(1):
+				older_than_five = datetime.datetime.now(timezone.utc).timestamp()-500
+				if comment.created_utc > older_than_five:
+					print('for race '+mo1.group(1))
+					#print(report(mo1.group(1)))
+					try:
+						comment.reply(report(mo1.group(1)))
+						print('output finished for '+mo1.group(1))
+					except:
+						print("An exception occurred")
+				else:
+					print('too old')
 
 
 def report(raceId):
