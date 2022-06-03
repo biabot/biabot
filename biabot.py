@@ -1,14 +1,14 @@
 import praw
-import requests
 from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
-import gzip
 import os
 import json
 import time
 from datetime import datetime
 import re
+import sys
+
 
 def main():
 	reddit = praw.Reddit(client_id=os.environ['REDDIT_CLIENT_ID'],
@@ -17,16 +17,20 @@ def main():
                      username=os.environ['REDDIT_USERNAME'],
                      password=os.environ['REDDIT_PASSWORD'])
 
-	print('start crawling')
+	print("os ?")
+	print(os.environ['REDDIT_USERNAME'])
+	print('start crawling2')
+	sys.stdout.flush()
 	for comment in reddit.subreddit("biathlon").stream.comments():
 		if "!biathlonResult" in comment.body:
 			print('found !biathlonResult')
 			raceregex = re.compile(r"(BT[A-X0-9]+)")
 			mo1 = raceregex.search(comment.body)
 			print('for race '+mo1.group(1))
-			#print(report(mo1.group(1)))
+			print(report(mo1.group(1)))
 			#comment.reply(report(mo1.group(1)))
-			print('output finished for '+mo1.group(1))
+			#print('output finished for '+mo1.group(1))
+
 
 def report(raceId):
 	url = f'https://www.realbiathlon.com/useddatacurrent/races/new/Races_{raceId}.zip'
@@ -110,8 +114,10 @@ def report(raceId):
 	out+= world_cup_standing(sex.upcase) unless %w[RL SR].include?(race_type)
 """
 
+
 def weather(data):
 	return f"The weather at the time of the race: Air temp {data['weather']['afterStart']['airTemperature']}°C, Snow temp {data['weather']['afterStart']['snowTemperature']}°C , wind at range {data['weather']['afterStart']['wind']}\n\n"
+
 
 def podium(data):
 	out = "\n\nToday's Podium :\n\n"
@@ -164,5 +170,7 @@ def reddit_format_dsq(title,data,jury=""):
 	out+="&#x200B;\n"
 	return(out)
 
+
 if __name__ == "__main__":
 	main()
+
