@@ -12,13 +12,11 @@ import sys
 
 
 def main():
-	reddit = praw.Reddit(
-		client_id="1CQ-o6ptxp8g8AAPUcm48w", #Your Personal Use Script
-		client_secret="y3VgZ_FbupsS46cfwn1qaqL4D03UaQ", #Your Secret key
-		password="Oukarina71", #Your Reddit Account Password
-		user_agent="Biathlon race", 
-		username="biabot",
-	)
+	reddit = praw.Reddit(client_id=os.environ['REDDIT_CLIENT_ID'],
+                     client_secret=os.environ['REDDIT_CLIENT_SECRET'],
+                     user_agent=os.environ['REDDIT_USER_AGENT'],
+                     username=os.environ['REDDIT_USERNAME'],
+                     password=os.environ['REDDIT_PASSWORD'])
 
 	sys.stdout.flush()
 	for comment in reddit.subreddit("biathlon").stream.comments():
